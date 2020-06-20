@@ -1,0 +1,3 @@
+creation_rules:
+  - gcp_kms: "projects/bigbears-io/locations/global/keyRings/bigbearsio/cryptoKeys/sops-key"
+   
