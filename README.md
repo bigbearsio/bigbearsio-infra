@@ -18,6 +18,13 @@ $ unzip ~/.terraform.d/plugins/terraform-provider-sops_v0.5.0_darwin_amd64.zip \
 ```
 gcloud auth application-default login
 ```
+* Get auth for Kubernetes cluster in `~/.kube/config`
+```
+gcloud --project bigbears-io container clusters get-credentials bigbears-cluster  --zone asia-southeast1-b
+
+# The cluster config should show up in kubectl
+kubectl config get-contexts
+```
 
 ## Notes
 gcloud commands

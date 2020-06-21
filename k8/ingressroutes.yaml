@@ -1,0 +1,34 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: commerce-client
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`commerce.bigbears.io`)
+    kind: Rule
+    services:
+    - name: bigbears-commerce-client
+      port: 80
+  tls:
+    certResolver: letsencrypt
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+    name: commerce-server
+    namespace: default
+spec:
+    entryPoints:
+        - websecure
+    routes:
+    - match: Host(`commerce-api.bigbears.io`)
+      kind: Rule
+      services:
+        - name: bigbears-commerce-server
+          port: 3000
+    tls:
+      certResolver: letsencrypt

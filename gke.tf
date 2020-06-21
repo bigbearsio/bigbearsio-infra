@@ -15,12 +15,21 @@ resource "google_container_cluster" "bigbears-cluster" {
     }
 }
 
-# Example: DNS records
-# 
-# resource "cloudflare_record" "k8" {
-#   zone_id = data.sops_file.secrets.data["cloudflare_bigbearsio_zone_id"]
-#   name    = "k8"
-#   value   = google_container_cluster.bigbears-cluster.endpoint
-#   type    = "A"
-#   ttl     = 3600
-# }
+resource "google_compute_address" "traefik" {
+  name = "traefik"
+  region = "asia-southeast1"
+}
+
+locals {
+    traefik = toset(["commerce", "commerce-api"])
+}
+
+resource "cloudflare_record" "traefik" {
+  for_each = local.traefik
+
+  zone_id = data.sops_file.secrets.data["cloudflare_bigbearsio_zone_id"]
+  name    = each.value
+  value   = google_compute_address.traefik.address
+  type    = "A"
+  ttl     = 3600
+}

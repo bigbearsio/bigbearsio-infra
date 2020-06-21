@@ -13,6 +13,16 @@ provider "cloudflare" {
   api_token = data.sops_file.secrets.data["cloudflare_bigbearsio_api_token"]
 }
 
+provider "helm" {
+  kubernetes {
+    config_context = "gke_bigbears-io_asia-southeast1-b_bigbears-cluster"
+  }
+}
+
+provider "kubernetes" {
+  config_context = "gke_bigbears-io_asia-southeast1-b_bigbears-cluster"
+}
+
 terraform {
   backend "gcs" {
     bucket  = "bigbearsio-tfstate"
