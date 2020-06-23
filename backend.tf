@@ -8,6 +8,11 @@ provider "google" {
   region      = "asia-southeast1"
 }
 
+provider "google-beta" {
+  project     = "bigbears-io"
+  region      = "asia-southeast1"
+}
+
 provider "cloudflare" {
   version = "~> 2.0"
   api_token = data.sops_file.secrets.data["cloudflare_bigbearsio_api_token"]

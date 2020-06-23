@@ -27,6 +27,11 @@ kubectl config get-contexts
 ```
 
 ## Notes
+Apply ingressroutes (terraform is yet to support CRD)
+```
+kubectl apply -f k8/ingressroutes.yaml 
+```
+
 gcloud commands
 ```
 $ brew cask install google-cloud-sdk

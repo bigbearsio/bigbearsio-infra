@@ -1,3 +1,9 @@
+locals {
+    gke_endpoints = {
+      "commerce": { "serviceName": "bigbears-commerce", "servicePort": 3000 }
+    }
+}
+
 resource "google_container_cluster" "bigbears-cluster" {
     name = "bigbears-cluster"
     location = "asia-southeast1-b"
@@ -15,21 +21,29 @@ resource "google_container_cluster" "bigbears-cluster" {
     }
 }
 
-resource "google_compute_address" "traefik" {
-  name = "traefik"
-  region = "asia-southeast1"
+resource "google_compute_global_address" "gke_endpoints" {
+  for_each = local.gke_endpoints
+
+  name = each.key
 }
 
-locals {
-    traefik = toset(["commerce", "commerce-api"])
+resource "google_compute_managed_ssl_certificate" "gke_endpoints" {
+  for_each = local.gke_endpoints 
+  provider = google-beta
+
+  name = each.key
+
+  managed {
+    domains = ["${each.key}.bigbears.io"]
+  }
 }
 
-resource "cloudflare_record" "traefik" {
-  for_each = local.traefik
+resource "cloudflare_record" "gke" {
+  for_each = local.gke_endpoints
 
   zone_id = data.sops_file.secrets.data["cloudflare_bigbearsio_zone_id"]
-  name    = each.value
-  value   = google_compute_address.traefik.address
+  name    = each.key
+  value   = google_compute_global_address.gke_endpoints[each.key].address
   type    = "A"
   ttl     = 3600
 }
